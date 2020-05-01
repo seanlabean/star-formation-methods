@@ -3,6 +3,10 @@
 # jupyter notebook dependencies
 */.ipynb_checkpoints
 
+#python binaries and backups
+*.pyc
+*~
+
 # torch files
 *hdf5*
 *.dat
