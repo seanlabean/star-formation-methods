@@ -1,0 +1,16 @@
+# File to be ignored by git
+
+# jupyter notebook dependencies
+*/.ipynb_checkpoints
+
+# torch files
+*hdf5*
+*.dat
+*.pickle
+*.amuse
+
+# Images
+*.png
+*.jpg
+*.PNG
+*.IMG
