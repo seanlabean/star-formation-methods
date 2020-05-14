@@ -98,4 +98,4 @@ if (__name__=="__main__"):
     rad_multiplier = args.radius
     data_files = glob.glob(files)
     final_array = get_sink_and_gas_mass(data_files)
-    pickle.dump(final_array, open("sink_and_star_data.pickle", "wb"))
+    pickle.dump(final_array, open("gas_around_sink_data.pickle", "wb"))
