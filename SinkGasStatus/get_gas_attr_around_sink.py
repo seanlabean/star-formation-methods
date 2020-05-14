@@ -14,12 +14,12 @@ parser.add_argument("-d", "--directory", default="./", help="Input directory for
 parser.add_argument("-r", "--radius", default=1.0, help="Radius from center of sink particle defining region where gas data is to be gathered. Default is the sink size: radius=1.0")
 
 def empty_array():
-    x = np.array([('name', np.zeros(len(data_files)),
+    x = np.array([('name',
                    np.zeros(len(data_files)),
                    np.zeros(len(data_files)),
                    np.zeros(len(data_files)),
                    np.zeros(len(data_files)),
-                   np.zeros(len(data_files)))],
+                   np.zeros(len(data_files)))]
                  dtype=[('name', 'U10'),
                         ('time', object),
                         ('gas_dens', object),
@@ -35,7 +35,8 @@ def find_gas_attr_under_sink(data_set, center, radius):
     gas_dens = sph['dens'].mean()
     gas_temp = sph['temp'].mean()
     gas_pres = sph['pres'].mean()
-    gas_cs = sph['gas','sound_speed']
+    gas_cs = sph['gas','sound_speed'].mean()
+    print gas_cs
     
     return gas_dens, gas_temp, gas_pres, gas_cs
 
@@ -72,10 +73,10 @@ def get_sink_and_gas_mass(data_files, radius):
                     
                     new_arr['name'] = sink_name
                     new_arr['time'][0][ind] = sim_time
-                    new_arr['gas_dens'][0][ind] = gas_dens
-                    new_arr['gas_pres'][0][ind] = gas_pres
-                    new_arr['gas_temp'][0][ind] = gas_temp
-                    new_arr['gas_cs'][0][ind] = gas_cs
+                    new_arr['gas_dens'][0][ind] = gas_dens.v
+                    new_arr['gas_pres'][0][ind] = gas_pres.v
+                    new_arr['gas_temp'][0][ind] = gas_temp.v
+                    new_arr['gas_cs'][0][ind] = gas_cs.v
                     
                     master_arr = np.vstack((master_arr,new_arr))
                 else:
@@ -84,10 +85,10 @@ def get_sink_and_gas_mass(data_files, radius):
                     gas_dens, gas_temp, gas_pres, gas_cs = find_gas_attr_under_sink(ds, sink_center, sink_radius)
                     
                     master_arr[sink_arr_loc]['time'][0][ind] = sim_time
-                    master_arr[sink_arr_loc]['gas_dens'][0][ind] = gas_dens
-                    master_arr[sink_arr_loc]['gas_pres'][0][ind] = gas_pres
-                    master_arr[sink_arr_loc]['gas_temp'][0][ind] = gas_temp
-                    master_arr[sink_arr_loc]['gas_cs'][0][ind] = gas_cs
+                    master_arr[sink_arr_loc]['gas_dens'][0][ind] = gas_dens.v
+                    master_arr[sink_arr_loc]['gas_pres'][0][ind] = gas_pres.v
+                    master_arr[sink_arr_loc]['gas_temp'][0][ind] = gas_temp.v
+                    master_arr[sink_arr_loc]['gas_cs'][0][ind] = gas_cs.v
 
     return master_arr
 
@@ -95,7 +96,7 @@ def get_sink_and_gas_mass(data_files, radius):
 if (__name__=="__main__"):
     args = parser.parse_args()
     files = args.directory + '*plt*'
-    rad_multiplier = args.radius
+    rad_multiplier = float(args.radius)
     data_files = glob.glob(files)
-    final_array = get_sink_and_gas_mass(data_files)
+    final_array = get_sink_and_gas_mass(data_files, rad_multiplier)
     pickle.dump(final_array, open("gas_around_sink_data.pickle", "wb"))
